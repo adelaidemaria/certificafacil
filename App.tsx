@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { PlusCircle, Users, GraduationCap, LayoutDashboard, Download, Trash2, Printer, Search, Edit2, FileCheck, CheckCircle, Award, Menu, X as CloseIcon, ShieldCheck, QrCode, SearchCheck, ExternalLink, Settings as SettingsIcon, Palette, Loader2, WifiOff } from 'lucide-react';
+import { PlusCircle, Users, GraduationCap, LayoutDashboard, Download, Trash2, Printer, Search, Edit2, FileCheck, CheckCircle, Award, Menu, X as CloseIcon, ShieldCheck, QrCode, SearchCheck, ExternalLink, Settings as SettingsIcon, Palette, Loader2, WifiOff, Lock } from 'lucide-react';
 import { Course, Student, SchoolSettings, Theme } from './types';
 import CourseForm from './components/CourseForm';
 import StudentForm from './components/StudentForm';
@@ -8,6 +8,7 @@ import StudentList from './components/StudentList';
 import CertificateView from './components/CertificateView';
 import SettingsForm from './components/SettingsForm';
 import DesignSettings from './components/DesignSettings';
+import Login from './components/Login';
 import {
   fetchCourses, createCourse, updateCourse, deleteCourse,
   fetchStudents, createStudent, updateStudent, deleteStudent, findStudentByVerificationCode,
@@ -50,6 +51,7 @@ const DEFAULT_SETTINGS: SchoolSettings = {
 };
 
 const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'courses' | 'students' | 'emit' | 'verify' | 'settings' | 'design'>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -376,6 +378,15 @@ const App: React.FC = () => {
     );
   }
 
+  if (!isAuthenticated && activeTab !== 'verify') {
+    return (
+      <Login
+        onLoginSuccess={() => setIsAuthenticated(true)}
+        onAccessVerify={() => navTo('verify')}
+      />
+    );
+  }
+
   if (selectedStudentForCert) {
     return (
       <div className="bg-gray-100 min-h-screen">
@@ -497,6 +508,12 @@ const App: React.FC = () => {
               className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all ${activeTab === 'settings' ? 'bg-slate-100/10 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
             >
               <SettingsIcon size={20} /> <span className="font-semibold">Configurações</span>
+            </button>
+            <button
+              onClick={() => setIsAuthenticated(false)}
+              className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all text-red-500/80 hover:bg-red-500/10 hover:text-red-400 mt-2"
+            >
+              <Lock size={20} /> <span className="font-semibold">Sair do Sistema</span>
             </button>
           </div>
         </nav>

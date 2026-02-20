@@ -282,3 +282,22 @@ export async function saveSettings(settings: SchoolSettings): Promise<void> {
     // Salvar temas separadamente
     await upsertThemes(settings.themes);
 }
+
+// ========================
+// Autenticação
+// ========================
+
+export async function authenticateAdmin(username: string, password: string): Promise<boolean> {
+    const { data, error } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('username', username)
+        .eq('password', password)
+        .maybeSingle();
+
+    if (error) {
+        console.error('Erro ao autenticar:', error);
+        return false;
+    }
+    return !!data;
+}
