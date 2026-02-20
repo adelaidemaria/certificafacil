@@ -301,3 +301,28 @@ export async function authenticateAdmin(username: string, password: string): Pro
     }
     return !!data;
 }
+
+export async function updateAdminCredentials(newUsername: string, newPassword: string): Promise<boolean> {
+    // Como há apenas 1 admin, podemos atualizar tudo na tabela.
+    const { data: existingAdmin, error: fetchError } = await supabase
+        .from('admin_users')
+        .select('id')
+        .limit(1)
+        .single();
+
+    if (fetchError || !existingAdmin) {
+        console.error('Erro ao buscar admin para update:', fetchError);
+        return false;
+    }
+
+    const { error: updateError } = await supabase
+        .from('admin_users')
+        .update({ username: newUsername, password: newPassword })
+        .eq('id', existingAdmin.id);
+
+    if (updateError) {
+        console.error('Erro ao atualizar credenciais:', updateError);
+        return false;
+    }
+    return true;
+}

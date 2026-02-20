@@ -491,12 +491,14 @@ const App: React.FC = () => {
             >
               <FileCheck size={22} /> <span className="font-bold uppercase tracking-wider text-sm">Gerar Certificado</span>
             </button>
-            <button
-              onClick={() => navTo('verify')}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all ${activeTab === 'verify' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+            <a
+              href="/verificar"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all text-slate-400 hover:bg-slate-800 hover:text-white"
             >
               <ShieldCheck size={20} /> <span className="font-semibold">Validar Público</span>
-            </button>
+            </a>
             <button
               onClick={() => navTo('design')}
               className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all ${activeTab === 'design' ? 'bg-blue-500 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
@@ -758,106 +760,9 @@ const App: React.FC = () => {
             </div>
           )}
 
-          {activeTab === 'verify' && (
-            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <header className="max-w-2xl mx-auto text-center">
-                <div className="p-4 bg-emerald-50 text-emerald-600 rounded-3xl w-fit mx-auto mb-6 shadow-sm border border-emerald-100">
-                  <ShieldCheck size={48} />
-                </div>
-                <h2 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight">Portal de Veracidade</h2>
-                <p className="text-slate-500 mt-2 text-lg">Confirme a autenticidade de um certificado emitido pela Melo & Melo.</p>
-              </header>
-
-              <div className="max-w-xl mx-auto bg-white p-8 md:p-10 rounded-[40px] shadow-sm border border-slate-100">
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Código de Controle (8 dígitos)</label>
-                    <div className="flex gap-3">
-                      <div className="relative flex-1">
-                        <SearchCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
-                        <input
-                          type="text"
-                          value={verifyInput}
-                          onChange={(e) => setVerifyInput(e.target.value)}
-                          onKeyDown={(e) => e.key === 'Enter' && handleCheckVerification()}
-                          placeholder="Ex: AB12CD34"
-                          className="w-full pl-12 pr-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 font-black text-xl tracking-widest uppercase text-slate-700 placeholder:text-slate-200"
-                          maxLength={8}
-                        />
-                      </div>
-                      <button
-                        onClick={() => handleCheckVerification()}
-                        disabled={verifying}
-                        className="bg-emerald-600 text-white px-8 rounded-2xl font-black hover:bg-emerald-700 transition shadow-lg shadow-emerald-100 shrink-0 disabled:opacity-60"
-                      >
-                        {verifying ? <Loader2 size={20} className="animate-spin" /> : 'VERIFICAR'}
-                      </button>
-                    </div>
-                  </div>
-
-                  {verificationError && (
-                    <div className="p-6 bg-red-50 text-red-600 rounded-[32px] border border-red-100 animate-in fade-in zoom-in duration-300 text-center">
-                      <div className="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <CloseIcon size={24} />
-                      </div>
-                      <p className="font-black uppercase tracking-tight text-lg">Certificado Inválido</p>
-                      <p className="text-sm font-bold mt-1 text-red-400">O código informado não corresponde a nenhum documento emitido pelo nosso sistema.</p>
-                    </div>
-                  )}
-
-                  {verificationResult && (
-                    <div className="mt-8 p-8 bg-emerald-50 rounded-[40px] border border-emerald-200 space-y-6 animate-in zoom-in duration-300 shadow-inner">
-                      <div className="flex items-center gap-4 border-b border-emerald-100 pb-5">
-                        <div className="bg-emerald-600 text-white p-2 rounded-xl shadow-lg shadow-emerald-200">
-                          <CheckCircle size={24} />
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Status: Verificado</p>
-                          <h4 className="text-xl font-black text-emerald-800">DOCUMENTO AUTÊNTICO</h4>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div>
-                          <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Aluno(a)</p>
-                          <p className="font-black text-slate-800 text-base uppercase leading-tight">{verificationResult.student.name}</p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">CPF Parcial</p>
-                          <p className="font-black text-slate-800 text-base">***.{verificationResult.student.cpf.slice(4)}</p>
-                        </div>
-                        <div className="col-span-full">
-                          <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Curso</p>
-                          <p className="font-black text-slate-800 text-base uppercase leading-tight bg-white/50 p-3 rounded-xl border border-emerald-100">{verificationResult.course.name}</p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Emitido em</p>
-                          <p className="font-black text-slate-800 text-base">{verificationResult.student.issuedAt}</p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Controle</p>
-                          <p className="font-black text-emerald-700 text-base bg-emerald-100 px-3 py-1 rounded-lg w-fit">{verificationResult.student.verificationCode}</p>
-                        </div>
-                      </div>
-
-                      <div className="pt-6 border-t border-emerald-100 text-center">
-                        <button
-                          onClick={() => setSelectedStudentForCert(verificationResult)}
-                          className="bg-slate-900 text-white px-8 py-3 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-2 mx-auto hover:bg-slate-800 transition shadow-lg shadow-slate-200"
-                        >
-                          <ExternalLink size={16} /> Abrir Documento
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </main>
     </div>
   );
 };
-
 export default App;

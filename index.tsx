@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import VerifyPage from './components/VerifyPage';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -9,8 +10,12 @@ if (!rootElement) {
 }
 
 const root = ReactDOM.createRoot(rootElement);
+
+// Roteamento Simples
+const path = window.location.pathname;
+
 root.render(
   <React.StrictMode>
-    <App />
+    {path === '/verificar' || path === '/verificar/' ? <VerifyPage /> : <App />}
   </React.StrictMode>
 );
